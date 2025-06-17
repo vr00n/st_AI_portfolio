@@ -6,6 +6,7 @@ import numpy as np
 import requests
 import json
 import matplotlib.pyplot as plt
+import traceback
 
 st.set_page_config(page_title="AI Portfolio Generator", layout="wide")
 st.title("📊 AI-Powered Investment Portfolio Simulator")
@@ -39,13 +40,19 @@ Investment Thesis: "{investment_thesis}"
 """
 
             try:
+                # Debugging log for payload
+                st.code(prompt, language="markdown")
+                st.info("Sending request to OpenAI API...")
+
                 response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
-                    response_format="json"
+                    response_format="json_object"
                 )
 
                 content = response.choices[0].message.content
+                st.code(content, language="json")
+
                 portfolio_data = json.loads(content)
                 portfolio = portfolio_data['portfolio']
                 justification = portfolio_data['overallJustification']
@@ -90,3 +97,4 @@ Investment Thesis: "{investment_thesis}"
 
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
+                st.exception(traceback.format_exc())
