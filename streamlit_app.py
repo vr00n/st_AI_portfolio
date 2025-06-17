@@ -50,6 +50,9 @@ Investment Thesis: "{investment_thesis}"
                     response_format="json_object"
                 )
 
+                st.success("OpenAI response received successfully.")
+                st.json(response.model_dump())  # Display raw structured response for debugging
+
                 content = response.choices[0].message.content
                 st.code(content, language="json")
 
