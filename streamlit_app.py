@@ -25,7 +25,7 @@ if st.button("Generate Portfolio"):
         st.error("Please provide all required fields.")
     else:
         with st.spinner("Generating portfolio..."):
-            openai.api_key = openai_api_key
+            client = openai.OpenAI(api_key=openai_api_key)
 
             prompt = f"""
 Please respond with a json object only. Do not include any introductory or concluding text, just the raw json. You are a financial advisor. Based on the following investment thesis, generate a diversified investment portfolio suitable for a starting capital of $10,000.
@@ -39,7 +39,7 @@ Investment Thesis: "{investment_thesis}"
 """
 
             try:
-                response = openai.ChatCompletion.create(
+                response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
                     response_format="json"
