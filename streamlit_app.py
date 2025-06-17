@@ -11,10 +11,12 @@ import traceback
 st.set_page_config(page_title="AI Portfolio Generator", layout="wide")
 st.title("📊 AI-Powered Investment Portfolio Simulator")
 
+# Use st.secrets for API keys
+openai_api_key = st.secrets.get("openai_api_key", "")
+fmp_api_key = st.secrets.get("fmp_api_key", "")
+
 # User input fields
 investment_thesis = st.text_area("Describe your investment thesis")
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-fmp_api_key = st.text_input("FMP API Key", type="password")
 
 timeframe = st.selectbox("Performance View Range", ["MTD", "QTD", "YTD", "1Y", "5Y", "Since Custom Date"])
 custom_start_date = None
@@ -40,22 +42,13 @@ Investment Thesis: "{investment_thesis}"
 """
 
             try:
-                # Debugging log for payload
-                st.code(prompt, language="markdown")
-                st.info("Sending request to OpenAI API...")
-
                 response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.7
                 )
 
-                st.success("OpenAI response received successfully.")
-                st.json(response.model_dump())
-
                 content = response.choices[0].message.content
-                st.code(content, language="json")
-
                 portfolio_data = json.loads(content)
                 portfolio = portfolio_data['portfolio']
                 justification = portfolio_data['overallJustification']
