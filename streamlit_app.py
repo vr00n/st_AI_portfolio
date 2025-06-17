@@ -47,11 +47,13 @@ Investment Thesis: "{investment_thesis}"
                 response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
+                    tool_choice="none",
+                    extra_headers={"OpenAI-Beta": "assistants=v1"},
                     response_format="json_object"
                 )
 
                 st.success("OpenAI response received successfully.")
-                st.json(response.model_dump())  # Display raw structured response for debugging
+                st.json(response.model_dump())
 
                 content = response.choices[0].message.content
                 st.code(content, language="json")
